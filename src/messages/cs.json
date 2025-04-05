@@ -1,0 +1,23 @@
+{
+  "title": "QR kód generátor",
+  "subtitle": "Zadejte text pro vygenerování QR kódu",
+  "input": {
+    "placeholder": "Zadejte text...",
+    "aria_label": "Text pro převod na QR kód"
+  },
+  "settings": {
+    "size": "Velikost (px):",
+    "errorLevel": {
+      "label": "Úroveň korekce chyb",
+      "low": "Nízká (7%)",
+      "medium": "Střední (15%)",
+      "quartile": "Kvartil (25%)",
+      "high": "Vysoká (30%)"
+    },
+    "colors": {
+      "qr": "Barva QR kódu",
+      "background": "Barva pozadí"
+    }
+  },
+  "empty_state": "QR kód se zobrazí, jakmile zadáte text"
+} 

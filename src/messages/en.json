@@ -1,0 +1,23 @@
+{
+  "title": "QR Code Generator",
+  "subtitle": "Enter your text below to generate a QR code",
+  "input": {
+    "placeholder": "Enter text here...",
+    "aria_label": "Text to convert to QR code"
+  },
+  "settings": {
+    "size": "Size (px):",
+    "errorLevel": {
+      "label": "Error Correction Level",
+      "low": "Low (7%)",
+      "medium": "Medium (15%)",
+      "quartile": "Quartile (25%)",
+      "high": "High (30%)"
+    },
+    "colors": {
+      "qr": "QR Code Color",
+      "background": "Background Color"
+    }
+  },
+  "empty_state": "QR code will appear here once you enter some text"
+} 
