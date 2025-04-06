@@ -19,5 +19,9 @@
       "background": "Background Color"
     }
   },
-  "empty_state": "QR code will appear here once you enter some text"
+  "empty_state": "QR code will appear here once you enter some text",
+  "download": {
+    "button": "Download QR Code",
+    "filename": "qr-code.svg"
+  }
 } 

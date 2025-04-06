@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const languages = {
@@ -20,6 +20,7 @@ export default function Home() {
   const [bgColor, setBgColor] = useState('#FFFFFF');
   const [currentLang, setCurrentLang] = useState<'en' | 'cs'>('en');
   const [messages, setMessages] = useState<any>(null);
+  const qrRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadMessages(currentLang).then(setMessages);
@@ -27,6 +28,32 @@ export default function Home() {
 
   const toggleLanguage = () => {
     setCurrentLang(currentLang === 'en' ? 'cs' : 'en');
+  };
+
+  const downloadQRCode = () => {
+    if (!qrRef.current) return;
+
+    const svgElement = qrRef.current.querySelector('svg');
+    if (!svgElement) return;
+
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+      const pngFile = canvas.toDataURL('image/png');
+
+      const downloadLink = document.createElement('a');
+      downloadLink.download = messages.download.filename;
+      downloadLink.href = pngFile;
+      downloadLink.click();
+    };
+
+    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
   };
 
   if (!messages) return null;
@@ -133,19 +160,30 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center space-y-4">
             {text && (
-              <div className="p-6 bg-white rounded-lg shadow-lg">
-                <QRCodeSVG
-                  value={text}
-                  size={size}
-                  level={errorLevel}
-                  includeMargin={true}
-                  className="mx-auto"
-                  fgColor={qrColor}
-                  bgColor={bgColor}
-                />
-              </div>
+              <>
+                <div ref={qrRef} className="p-6 bg-white rounded-lg shadow-lg">
+                  <QRCodeSVG
+                    value={text}
+                    size={size}
+                    level={errorLevel}
+                    includeMargin={true}
+                    className="mx-auto"
+                    fgColor={qrColor}
+                    bgColor={bgColor}
+                  />
+                </div>
+                <button
+                  onClick={downloadQRCode}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  <span>{messages.download.button}</span>
+                </button>
+              </>
             )}
           </div>
 
