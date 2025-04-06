@@ -14,6 +14,42 @@ async function loadMessages(locale: string) {
 
 type DownloadFormat = 'svg' | 'png';
 
+interface Messages {
+  title: string;
+  subtitle: string;
+  input: {
+    placeholder: string;
+    aria_label: string;
+  };
+  settings: {
+    size: string;
+    errorLevel: {
+      label: string;
+      low: string;
+      medium: string;
+      quartile: string;
+      high: string;
+    };
+    colors: {
+      qr: string;
+      background: string;
+    };
+  };
+  empty_state: string;
+  download: {
+    button: string;
+    filename: {
+      svg: string;
+      png: string;
+    };
+    format: {
+      label: string;
+      svg: string;
+      png: string;
+    };
+  };
+}
+
 export default function Home() {
   const [text, setText] = useState('');
   const [size, setSize] = useState(256);
@@ -21,7 +57,7 @@ export default function Home() {
   const [qrColor, setQrColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#FFFFFF');
   const [currentLang, setCurrentLang] = useState<'en' | 'cs'>('en');
-  const [messages, setMessages] = useState<any>(null);
+  const [messages, setMessages] = useState<Messages | null>(null);
   const [downloadFormat, setDownloadFormat] = useState<DownloadFormat>('svg');
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +70,7 @@ export default function Home() {
   };
 
   const downloadQRCode = () => {
-    if (!qrRef.current) return;
+    if (!qrRef.current || !messages) return;
 
     const svgElement = qrRef.current.querySelector('svg');
     if (!svgElement) return;
@@ -45,7 +81,7 @@ export default function Home() {
       const url = URL.createObjectURL(blob);
       const downloadLink = document.createElement('a');
       downloadLink.href = url;
-      downloadLink.download = messages.download.filename.svg;
+      downloadLink.download = messages!.download.filename.svg;
       downloadLink.click();
       URL.revokeObjectURL(url);
     } else {
@@ -61,7 +97,7 @@ export default function Home() {
         const pngFile = canvas.toDataURL('image/png');
 
         const downloadLink = document.createElement('a');
-        downloadLink.download = messages.download.filename.png;
+        downloadLink.download = messages!.download.filename.png;
         downloadLink.href = pngFile;
         downloadLink.click();
       };
