@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:20 AS builder
+FROM node:23 AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve the application
-FROM node:20-alpine
+FROM node:23-alpine
 
 # Set the working directory
 WORKDIR /app
