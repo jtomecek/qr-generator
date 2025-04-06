@@ -17,7 +17,8 @@
     "colors": {
       "qr": "Barva QR kódu",
       "background": "Barva pozadí"
-    }
+    },
+    "transparentBg": "Průhledné pozadí"
   },
   "empty_state": "QR kód se zde zobrazí po zadání textu",
   "download": {

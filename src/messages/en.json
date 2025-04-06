@@ -17,7 +17,8 @@
     "colors": {
       "qr": "QR Code Color",
       "background": "Background Color"
-    }
+    },
+    "transparentBg": "Transparent Background"
   },
   "empty_state": "QR code will appear here once you enter some text",
   "download": {

@@ -34,6 +34,7 @@ interface Messages {
       qr: string;
       background: string;
     };
+    transparentBg: string;
   };
   empty_state: string;
   download: {
@@ -60,6 +61,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Messages | null>(null);
   const [downloadFormat, setDownloadFormat] = useState<DownloadFormat>('svg');
   const qrRef = useRef<HTMLDivElement>(null);
+  const [transparentBg, setTransparentBg] = useState(false);
 
   useEffect(() => {
     loadMessages(currentLang).then(setMessages);
@@ -203,9 +205,22 @@ export default function Home() {
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
                     className="h-8 w-16"
+                    disabled={transparentBg}
                   />
                   <span className="text-sm text-gray-600">{bgColor}</span>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="transparentBg"
+                  checked={transparentBg}
+                  onChange={(e) => setTransparentBg(e.target.checked)}
+                />
+                <label htmlFor="transparentBg" className="text-sm font-medium text-gray-700">
+                  {messages.settings.transparentBg}
+                </label>
               </div>
             </div>
           </div>
@@ -221,7 +236,7 @@ export default function Home() {
                     includeMargin={true}
                     className="mx-auto"
                     fgColor={qrColor}
-                    bgColor={bgColor}
+                    bgColor={transparentBg ? 'transparent' : bgColor}
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row items-center gap-4">
