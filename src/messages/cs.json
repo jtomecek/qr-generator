@@ -22,6 +22,14 @@
   "empty_state": "QR kód se zde zobrazí po zadání textu",
   "download": {
     "button": "Stáhnout QR kód",
-    "filename": "qr-kod.svg"
+    "filename": {
+      "svg": "qr-kod.svg",
+      "png": "qr-kod.png"
+    },
+    "format": {
+      "label": "Formát",
+      "svg": "SVG",
+      "png": "PNG"
+    }
   }
 } 

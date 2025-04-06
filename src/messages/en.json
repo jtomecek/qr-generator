@@ -22,6 +22,14 @@
   "empty_state": "QR code will appear here once you enter some text",
   "download": {
     "button": "Download QR Code",
-    "filename": "qr-code.svg"
+    "filename": {
+      "svg": "qr-code.svg",
+      "png": "qr-code.png"
+    },
+    "format": {
+      "label": "Format",
+      "svg": "SVG",
+      "png": "PNG"
+    }
   }
 } 

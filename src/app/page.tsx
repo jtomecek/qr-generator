@@ -12,6 +12,8 @@ async function loadMessages(locale: string) {
   return (await import(`../messages/${locale}.json`)).default;
 }
 
+type DownloadFormat = 'svg' | 'png';
+
 export default function Home() {
   const [text, setText] = useState('');
   const [size, setSize] = useState(256);
@@ -20,6 +22,7 @@ export default function Home() {
   const [bgColor, setBgColor] = useState('#FFFFFF');
   const [currentLang, setCurrentLang] = useState<'en' | 'cs'>('en');
   const [messages, setMessages] = useState<any>(null);
+  const [downloadFormat, setDownloadFormat] = useState<DownloadFormat>('svg');
   const qrRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,24 +39,35 @@ export default function Home() {
     const svgElement = qrRef.current.querySelector('svg');
     if (!svgElement) return;
 
-    const svgData = new XMLSerializer().serializeToString(svgElement);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
-      const pngFile = canvas.toDataURL('image/png');
-
+    if (downloadFormat === 'svg') {
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const blob = new Blob([svgData], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
       const downloadLink = document.createElement('a');
-      downloadLink.download = messages.download.filename;
-      downloadLink.href = pngFile;
+      downloadLink.href = url;
+      downloadLink.download = messages.download.filename.svg;
       downloadLink.click();
-    };
+      URL.revokeObjectURL(url);
+    } else {
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
 
-    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+        const pngFile = canvas.toDataURL('image/png');
+
+        const downloadLink = document.createElement('a');
+        downloadLink.download = messages.download.filename.png;
+        downloadLink.href = pngFile;
+        downloadLink.click();
+      };
+
+      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+    }
   };
 
   if (!messages) return null;
@@ -174,15 +188,31 @@ export default function Home() {
                     bgColor={bgColor}
                   />
                 </div>
-                <button
-                  onClick={downloadQRCode}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                  <span>{messages.download.button}</span>
-                </button>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="downloadFormat" className="text-sm font-medium text-gray-700">
+                      {messages.download.format.label}:
+                    </label>
+                    <select
+                      id="downloadFormat"
+                      value={downloadFormat}
+                      onChange={(e) => setDownloadFormat(e.target.value as DownloadFormat)}
+                      className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                      <option value="svg">{messages.download.format.svg}</option>
+                      <option value="png">{messages.download.format.png}</option>
+                    </select>
+                  </div>
+                  <button
+                    onClick={downloadQRCode}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                    <span>{messages.download.button}</span>
+                  </button>
+                </div>
               </>
             )}
           </div>
